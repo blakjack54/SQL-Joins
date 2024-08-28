@@ -1,0 +1,57 @@
+/* joins: select all the computers from the products table:
+using the products table and the categories table, return the product name and the category name */
+SELECT products.product_name, categories.category_name
+FROM products
+JOIN categories ON products.category_id = categories.category_id
+WHERE categories.category_name = 'Computers';
+
+/* joins: find all product names, product prices, and product ratings that have a rating of 5 */
+SELECT products.product_name, products.price, reviews.rating
+FROM products
+JOIN reviews ON products.product_id = reviews.product_id
+WHERE reviews.rating = 5;
+
+/* joins: find the employee with the most total quantity sold. Use the sum() function and group by */
+SELECT employees.employee_id, employees.first_name, employees.last_name, SUM(sales_details.quantity) AS total_quantity_sold
+FROM employees
+JOIN sales ON employees.employee_id = sales.employee_id
+JOIN sales_details ON sales.sales_id = sales_details.sales_id
+GROUP BY employees.employee_id, employees.first_name, employees.last_name
+ORDER BY total_quantity_sold DESC
+LIMIT 1;
+
+/* joins: find the name of the department, and the name of the category for Appliances and Games */
+SELECT departments.department_name, categories.category_name
+FROM departments
+JOIN categories ON departments.department_id = categories.department_id
+WHERE categories.category_name IN ('Appliances', 'Games');
+
+/* joins: find the product name, total # sold, and total price sold, for Eagles: Hotel California -- You may need to use SUM() */
+SELECT products.product_name, SUM(sales_details.quantity) AS total_sold, SUM(sales_details.quantity * sales_details.price) AS total_price_sold
+FROM products
+JOIN sales_details ON products.product_id = sales_details.product_id
+WHERE products.product_name = 'Eagles: Hotel California'
+GROUP BY products.product_name;
+
+/* joins: find Product name, reviewer name, rating, and comment on the Visio TV. (only return for the lowest rating!) */
+SELECT products.product_name, reviews.reviewer_name, reviews.rating, reviews.comment
+FROM products
+JOIN reviews ON products.product_id = reviews.product_id
+WHERE products.product_name = 'Visio TV'
+ORDER BY reviews.rating ASC
+LIMIT 1;
+
+-- ------------------------------------------ Extra - May be difficult
+/* Your goal is to write a query that serves as an employee sales report.
+This query should return:
+-  the employeeID
+-  the employee's first and last name
+-  the name of each product
+-  and how many of that product they sold */
+SELECT employees.employee_id, employees.first_name, employees.last_name, products.product_name, SUM(sales_details.quantity) AS quantity_sold
+FROM employees
+JOIN sales ON employees.employee_id = sales.employee_id
+JOIN sales_details ON sales.sales_id = sales_details.sales_id
+JOIN products ON sales_details.product_id = products.product_id
+GROUP BY employees.employee_id, employees.first_name, employees.last_name, products.product_name
+ORDER BY employees.employee_id;
